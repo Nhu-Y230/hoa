@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn thi Hóa Học</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f1f38;
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --cream: #faf6ef;
+            --red: #c0392b;
+            --green: #1a7a4a;
+            --text: #1a1a2e;
+            --border: #d4c4a0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: var(--cream);
+            color: var(--text);
+            padding: 40px 20px 80px;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .tf-btn.correct{
+background:#27ae60;
+color:#fff;
+border-color:#27ae60;
+}
+
+.tf-btn.wrong{
+background:#e74c3c;
+color:#fff;
+border-color:#e74c3c;
+}
+        .wrapper { max-width: 880px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 40px; }
+        .header-line { height: 3px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin-bottom: 20px; }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--navy); letter-spacing: 1px; text-transform: uppercase; }
+        header p { color: var(--gold); font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; font-weight: 600; }
+        .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+        .badge { display: inline-block; background: var(--navy); color: var(--gold); font-size: 0.7rem; padding: 4px 12px; border-radius: 20px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
+
+        .progress-label { text-align: right; font-size: 0.8rem; color: #888; margin-bottom: 6px; font-weight: 600; }
+        .progress-wrap { background: #e8e0d0; border-radius: 10px; height: 8px; margin-bottom: 36px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 10px; transition: width 0.4s ease; width: 0%; }
+
+        .part-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: white; background: var(--navy); padding: 12px 22px; border-radius: 10px; margin: 40px 0 22px; display: flex; align-items: center; gap: 12px; }
+        .part-title .pt-pts { font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; background: var(--gold); color: var(--navy); padding: 3px 10px; border-radius: 12px; font-weight: 700; margin-left: auto; }
+
+        .section-label { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); border-left: 4px solid var(--gold); padding: 5px 0 5px 12px; margin: 24px 0 16px; }
+
+        /* MCQ */
+        .set-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .set-card.solved { border-color: var(--green); }
+        .q-text { font-size: 0.92rem; font-weight: 600; color: var(--navy); margin-bottom: 10px; line-height: 1.6; }
+        .q-text sub, .q-text sup { font-size: 0.75em; }
+        .options { display: flex; flex-direction: column; gap: 5px; }
+        .opt-btn {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: white; border: 1.5px solid var(--border);
+            border-radius: 6px; padding: 8px 12px;
+            cursor: pointer; text-align: left;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.87rem; color: var(--text);
+            transition: all 0.15s; line-height: 1.5; width: 100%;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--gold); background: #fdf5e0; }
+        .opt-letter { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.83rem; color: var(--navy); background: #f0e8d0; border-radius: 4px; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .opt-btn.correct { background: #edfaf3; border-color: var(--green); }
+        .opt-btn.correct .opt-letter { background: var(--green); color: white; }
+        .opt-btn.wrong { background: #fdf0ef; border-color: var(--red); animation: shake 0.35s ease; }
+        .opt-btn.wrong .opt-letter { background: var(--red); color: white; }
+        .opt-btn:disabled { cursor: default; opacity: 0.4; }
+        .opt-btn.correct:disabled, .opt-btn.wrong:disabled { opacity: 1; }
+
+        /* Topic chips */
+        .topic-chip { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+        .chip-nguyen-tu  { background: #e3f2fd; color: #1565c0; }
+        .chip-bang-tuan  { background: #fce4ec; color: #ad1457; }
+        .chip-huu-co     { background: #fff3e0; color: #b45309; }
+        .chip-carbo      { background: #e8f5e9; color: #2e7d32; }
+        .chip-polymer    { background: #f3e8ff; color: #7e22ce; }
+        .chip-pin        { background: #e0f2f1; color: #00695c; }
+        .chip-kim-loai   { background: #fbe9e7; color: #bf360c; }
+        .chip-kim-kiem   { background: #e8eaf6; color: #283593; }
+
+        /* TRUE/FALSE */
+        .tf-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tf-card.all-solved { border-color: var(--green); }
+        .tf-context { font-size: 0.87rem; color: #444; background: #f7f3ea; border-left: 3px solid var(--gold); padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; line-height: 1.65; }
+        .tf-items { display: flex; flex-direction: column; gap: 9px; }
+        .tf-row { display: flex; align-items: flex-start; gap: 10px; background: #faf7f1; border: 1px solid #ede4d0; border-radius: 7px; padding: 10px 12px; }
+        .tf-row.solved-t { background: #edfaf3; border-color: #a8d8b9; }
+        .tf-row.solved-f { background: #edfaf3; border-color: #a8d8b9; }
+        .tf-label { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.85rem; color: var(--navy); background: #f0e8d0; border-radius: 4px; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .tf-statement { font-size: 0.87rem; color: var(--text); flex: 1; line-height: 1.55; }
+        .tf-btns { display: flex; gap: 6px; flex-shrink: 0; }
+        .tf-btn { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.82rem; border: 1.5px solid var(--border); border-radius: 5px; padding: 5px 13px; cursor: pointer; background: white; transition: all 0.15s; }
+        .tf-btn:hover:not(:disabled) { background: #fdf5e0; border-color: var(--gold); }
+        .tf-btn.t-btn.correct { background: #edfaf3; border-color: var(--green); color: var(--green); }
+        .tf-btn.f-btn.correct { background: #edfaf3; border-color: var(--green); color: var(--green); }
+        .tf-btn.wrong { background: #fdf0ef; border-color: var(--red); color: var(--red); animation: shake 0.35s ease; }
+        .tf-btn:disabled { cursor: default; opacity: 0.35; }
+        .tf-btn.correct:disabled, .tf-btn.wrong:disabled { opacity: 1; }
+
+        /* SHORT ANSWER */
+        .sa-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .sa-card.solved { border-color: var(--green); }
+        .sa-q { font-size: 0.92rem; font-weight: 600; color: var(--navy); margin-bottom: 12px; line-height: 1.6; }
+        .sa-input-wrap { display: flex; gap: 10px; align-items: center; }
+        .sa-input { font-family: 'Source Sans 3', sans-serif; font-size: 0.92rem; border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 14px; width: 180px; outline: none; transition: border-color 0.15s; background: #faf7f1; }
+        .sa-input:focus { border-color: var(--gold); }
+        .sa-input.correct { border-color: var(--green); background: #edfaf3; color: var(--green); font-weight: 700; }
+        .sa-input.wrong { border-color: var(--red); background: #fdf0ef; animation: shake 0.35s ease; }
+        .sa-btn { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.82rem; border: 1.5px solid var(--gold); border-radius: 6px; padding: 9px 18px; cursor: pointer; background: var(--gold); color: var(--navy); transition: all 0.15s; }
+        .sa-btn:hover:not(:disabled) { background: var(--gold-light); }
+        .sa-btn:disabled { opacity: 0.45; cursor: default; }
+        .sa-hint { font-size: 0.82rem; color: #888; margin-top: 7px; }
+        .sa-hint.ok { color: var(--green); font-weight: 600; }
+
+        /* Score */
+        .score-box { display: none; text-align: center; background: var(--navy); color: white; border-radius: 12px; padding: 32px; margin: 40px 0 20px; position: relative; overflow: hidden; }
+        .score-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)); }
+        .score-number { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); line-height: 1; }
+        .score-label { font-size: 0.82rem; letter-spacing: 3px; text-transform: uppercase; opacity: 0.65; margin-top: 6px; }
+        .score-rows { margin-top: 14px; display: flex; justify-content: center; gap: 26px; flex-wrap: wrap; }
+        .score-row { font-size: 0.88rem; opacity: 0.88; }
+        .score-row strong { color: var(--gold-light); }
+
+        .btn-group { text-align: center; margin-top: 28px; }
+        .btn-reset { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: 2px solid #ccc; border-radius: 6px; padding: 11px 28px; cursor: pointer; background: white; color: #777; transition: all 0.2s; }
+        .btn-reset:hover { background: #f5f5f5; border-color: #aaa; }
+
+        @keyframes shake { 0%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-3px)} 80%{transform:translateX(3px)} 100%{transform:translateX(0)} }
+        @media(max-width:600px){ .set-card, .tf-card, .sa-card { padding: 16px 12px; } .tf-row { flex-wrap: wrap; } }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <header>
+        <div class="header-line"></div>
+        <h1>Ôn Thi Hóa Học</h1>
+        <p>Đề Cương Ôn Tập — 3 Phần</p>
+        <div class="badges">
+            <span class="badge">Phần I: 50 câu MCQ</span>
+            <span class="badge">Phần II: 10 câu Đúng/Sai</span>
+            <span class="badge">Phần III: 10 câu Ngắn</span>
+        </div>
+        <div class="header-line" style="margin-top:18px;"></div>
+    </header>
+
+    <div class="progress-label" id="progressLabel">0 / 110 câu đã hoàn thành</div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressBar"></div></div>
+
+    <div id="quizContainer"></div>
+
+    <div class="score-box" id="scoreBox">
+        <div class="score-number" id="scoreNum">—</div>
+        <div class="score-label">Câu hoàn thành</div>
+        <div class="score-rows" id="scoreRows"></div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-reset" onclick="resetQuiz()">↺ Làm lại (xáo trộn câu hỏi)</button>
+    </div>
+</div>
+
+<script>
+// ===== PART I: MCQ (50 câu) =====
+const MCQ = [
+    { q: 'Câu 1.Câu 1: Hạt nào sau đây mang điện tích âm?', opts:['Electron.','Proton','Neutron','Hạt nhân'], ans:0, t:'nguyen-tu' },
+    { q: 'Câu 2.Câu 2: Hạt nào sau đây không mang điện:', opts:['Proton','Electron','Hạt nhân','Neutron'], ans:3, t:'nguyen-tu' },
+    { q: 'Câu 3. Câu 3:Orbital nguyên tử (AO) nào có dạng hình cầu?', opts:['AO p','AO f','AO d','AO s'], ans:3, t:'nguyen-tu' },
+    { q: 'Câu 4. Câu 4:Hình ảnh dưới đây là hình dạng của loại orbital nguyên tử nào?',img: 'IMAGES/Picture1.jpg', opts:['Orbital f','Orbital d','Orbital s','Orbital p'], ans:2, t:'nguyen-tu' },
+    { q: 'Câu 5. Câu 5:Nguyên tố X (Z=17) nằm ở vị trí nào trên bảng tuần hoàn:', opts:['Ô 17, chu kì 3, nhóm 7A','Ô 17, chu kì 3, nhóm VIIA','Ô 17, chu kì VIIA, nhóm 3','Ô 17, chu kì III, nhóm 7A'], ans:1, t:'bang-tuan' },
+    { q: 'Câu 6. Câu 6:Nguyên tố K có số hiệu nguyên tử là 19. Phát biểu nào sau đây về K là không đúng?', opts:['Vỏ nguyên tử K có 4 lớp electron và lớp ngoài cùng có 1 electron','Số electron ở vỏ nguyên tử K là 19','Nguyên tố K là một phi kim','Hạt nhân nguyên tố K có 19 proton'], ans:2, t:'bang-tuan' },
+    { q: 'Câu 7. Câu 7:Trên bảng tuần hoàn các nguyên tố hóa học, nguyên tố halogen nằm ở:', opts:['Nhóm VIIIA','Nhóm VIIA','Nhóm IIA','Nhóm IA'], ans:1, t:'bang-tuan' },
+    { q: 'Câu 8.Câu 8: Trên bảng tuần hoàn các nguyên tố hóa học, nguyên tố khí hiếm nằm ở:', opts:['Nhóm VIIIA','Nhóm VIIA','Nhóm IIA','Nhóm IA'], ans:0, t:'bang-tuan' },
+    { q: 'Câu 9. Câu 9:Trên bảng tuần hoàn các nguyên tố hóa học, kim loại kiềm nằm ở::', opts:['Nhóm VIIIA','Nhóm VIIA','Nhóm IIA','Nhóm IA'], ans:3, t:'bang-tuan' },
+    { q: 'Câu 10. Câu 10:Trong thành phần phân tử hợp chất hữu cơ nhất thiết phải có nguyên tố:', opts:['Nitrogen','Carbon','Hydrogen','Oxygen'], ans:1, t:'huu-co' },
+    { q: 'Câu 11. Câu 11:Liên kết hóa học trong phân tử chất hữu cơ chủ yếu là:', opts:['Liên kết hydrogen','Liên kết cộng hóa trị','Liên kết ion','Liên kết kim loại'], ans:1, t:'huu-co' },
+    { q: 'Câu 12. Câu 12:Ngâm rượu thuốc đã ứng dụng phương pháp tách biệt và tinh chế nào?', opts:['Chưng cất','Kết tinh','Chiết','Sắc kí'], ans:2, t:'huu-co' },
+    { q: 'Câu 13. Câu 13:Nấu rượu uống đã ứng dụng phương pháp tách biệt và tinh chế nào?', opts:['Sắc kí','Chưng cất','Chiết','Kết tinh'], ans:1, t:'huu-co' },
+    { q: 'Câu 14.Câu 14: Phản ứng đặc trưng của alkane là:', opts:['Phản ứng thủy phân','Phản ứng cộng với halogen','Phản ứng crackinh','Phản ứng thế với halogen'], ans:3, t:'huu-co' },
+    { q: 'Câu 15.Câu 15: Phản ứng đặc trưng của hydrocarbon không no là:', opts:['Phản ứng thủy phân','Phản ứng cộng','Phản ứng crackinh','Phản ứng thế'], ans:1, t:'huu-co' },
+    { q: 'Câu 16.Câu 16: Trong các hợp chất sau, chất nào là hydrocarbon?', opts:['C₆H₅NH₂','C₂H₅OH','CH₃COOH','C₆H₆'], ans:3, t:'huu-co' },
+    { q: 'Câu 17.Câu 17: Phản ứng đặc trưng của hydrocarbon không no là:', opts:['Phản ứng cộng','Crackinh','Phản ứng cháy','Phản ứng thế'], ans:0, t:'huu-co' },
+    { q: 'Câu 18.Câu 18: Phản ứng thủy phân ester trong môi trường kiềm khi đun nóng được gọi là?', opts:['Ester hóa','Sự lên men','Xà phòng hóa','Hydrat hóa'], ans:2, t:'huu-co' },
+    { q: 'Câu 19.Câu 19: Đun nóng ester HCOOCH3 với một lượng vừa đủ dung dịch NaOH, sản phẩm thu được là:', opts:['HCOONa và CH₃OH','HCOONa và C₂H₅OH','CH₃COONa và C₂H₅OH','CH₃COONa và CH₃OH'], ans:0, t:'huu-co' },
+    { q: 'Câu 20.Câu 20: Ester X được tạo bởi CH₃COOH và CH₃OH. Công thức của X là:', opts:['CH₃COOCH₃','HCOOCH₃','CH₃COOC₂H₅','HCOOC₂H₅'], ans:0, t:'huu-co' },
+    { q: 'Câu 21. Câu 21:Công thức phân tử của glucose là:', opts:['(C₆H₁₀O₅)n','C₁₂H₂₂O₁₁','C₆H₁₀O₅','C₆H₁₂O₆'], ans:3, t:'carbo' },
+    { q: 'Câu 22.Câu 22: Công thức phân tử của saccharose là:', opts:['(C₆H₁₀O₅)n','C₆H₁₂O₆','C₆H₁₀O₅','C₁₂H₂₂O₁₁'], ans:3, t:'carbo' },
+    { q: 'Câu 23.Câu 23: Thủy phân hoàn toàn tinh bột trong môi trường acid tạo thành:', opts:['Glucose và fructose','Glucose','Saccharose','Fructose'], ans:1, t:'carbo' },
+    { q: 'Câu 24. Câu 24:Trong môi trường acid, saccharose bị thủy phân thành:', opts:['Glucose','Saccharose','Fructose','Glucose và fructose'], ans:3, t:'carbo' },
+    { q: 'Câu 25.Câu 25: Quả chuối xanh có chứa chất X làm iodine chuyển thành màu xanh. Chất X là:', opts:['Cellulose','Saccharose','Tinh bột','Glucose'], ans:2, t:'carbo' },
+    { q: 'Câu 26. Câu 26:Cho biết hiện tượng xảy ra khi cho glucose tác dụng với thuốc thử Tollens:', opts:['Xuất hiện kết tủa màu trắng bạc','Xuất hiện kết tủa màu trắng','Hòa tan kết tủa, tạo dung dịch màu xanh lam','Tạo dung dịch màu xanh lam'], ans:0, t:'carbo' },
+    { q: 'Câu 27.Câu 27: Khi ăn các loại thực phẩm như thịt, cá, trứng,… hệ tiêu hóa giúp chuyển hóa protein thành hợp chất nào?', opts:['Amine','Amino acid','Glucose','Acid béo'], ans:1, t:'huu-co' },
+    { q: 'Câu 28. Câu 28:Sự kết hợp nhiều phân tử nhỏ (monomer) giống nhau hay tương tự nhau thành các phân tử lớn (polymer) được gọi là:', opts:['Sự trùng ngưng','Sự tổng hợp','Sự trùng hợp','Sự polymer hóa'], ans:2, t:'polymer' },
+    { q: 'Câu 29.Câu 29: Quá trình kết hợp nhiều phân tử nhỏ (monomer) thành phân tử lớn (polymer) đồng thời giải phóng những phân tử nhỏ khác (thí dụ H2O) được gọi là phản ứng:', opts:['Thủy phân','Trùng ngưng','Trùng hợp','Xà phòng hóa'], ans:1, t:'polymer' },
+    { q: 'Câu 30.Câu 30: PVC là ký hiệu của polymer nào?',img: 'IMAGES/Picture2.jpg', opts:['Polyethylene','Poly(vinyl chloride)','Polypropylene','Polystyrene'], ans:1, t:'polymer' },
+    { q: 'Câu 31.Câu  31: PP là ký hiệu của polymer nào?',img: 'IMAGES/Picture3.jpg', opts:['Polypropylene','Polystyrene','Polyethylene','Poly(vinyl chloride)'], ans:0, t:'polymer' },
+    { q: 'Câu 32.Câu 32: Loại tơ nào KHÔNG phải là tơ tự nhiên?', opts:['Len','Bông','Tơ visco','Tơ tằm'], ans:2, t:'polymer' },
+    { q: 'Câu 33.Câu 33: Loại tơ nào là tơ bán tổng hợp?', opts:['Len','Tơ tằm','Bông','Tơ visco'], ans:3, t:'polymer' },
+    { q: 'Câu 34.Câu 34: Cặp oxi hóa-khử của kim loại là:', opts:['Dạng oxi hóa và dạng khử của cùng một kim loại','Dạng oxi hóa và dạng khử của cùng một chất','Dạng oxi hóa và dạng khử','Dạng oxi hóa và dạng khử của cùng một nguyên tố'], ans:0, t:'pin' },
+    { q: 'Câu 35.Câu 35: Khi pin Galvani Zn–Cu hoạt động, ở cathode xảy ra quá trình:', opts:['Cu → Cu²⁺ + 2e','Cu²⁺ + 2e → Cu','Zn²⁺ + 2e → Zn','Zn → Zn²⁺ + 2e'], ans:1, t:'pin' },
+    { q: 'Câu 36.Câu 36: Khi pin Galvani Zn–Cu hoạt động, ở anode xảy ra quá trình:', opts:['Cu²⁺ + 2e → Cu','Zn → Zn²⁺ + 2e','Cu → Cu²⁺ + 2e','Zn²⁺ + 2e → Zn'], ans:1, t:'pin' },
+    { q: 'Câu 37.Câu 37: Trong pin điện, tác dụng của cầu muối là:', opts:['Cho phép kim loại từ cực này di chuyển đến cực khác','Cho phép dòng điện di chuyển ngược chiều kim đồng hồ','Cho phép ion dương và ion âm di chuyển qua lại trong cầu muối làm các dung dịch trung hòa về điện.','Cho phép hai dung dịch pha trộn với nhau'], ans:2, t:'pin' },
+    { q: 'Câu 38.Câu 38: Cấu hình electron nào là của nguyên tử kim loại?', opts:['1s²2s²2p³','1s²2s²2p⁶3s²3p⁶','1s²2s²2p⁵','1s²2s²2p⁶3s¹'], ans:3, t:'kim-loai' },
+    { q: 'Câu 39.Câu 39: Cấu hình electron nào là của nguyên tử kim loại?', opts:['1s²2s²2p⁵','1s²2s²2p⁶3s²3p¹','1s²2s²2p³','1s²2s²2p⁶3s²3p⁶'], ans:1, t:'kim-loai' },
+    { q: 'Câu 40. Câu 40:Tính chất hóa học đặc trưng của kim loại là:', opts:['Tính khử','Tính base','Tính acid','Tính oxi hóa'], ans:0, t:'kim-loai' },
+    { q: 'Câu 41. Câu 41:Kim loại có những tính chất vật lý chung nào sau đây?', opts:['Tính dẻo, tính dẫn điện, tính dẫn nhiệt và có ánh kim','Tính dẻo, có ánh kim, tính cứng','Tính dẻo, tính dẫn nhiệt, nhiệt độ nóng chảy cao','Tính dẫn điện, tính dẫn nhiệt, có khối lượng riêng lớn, có ánh kim'], ans:0, t:'kim-loai' },
+    { q: 'Câu 42.Câu 42: Sử dụng phương pháp nào để sản xuất sodium?', opts:['Phương pháp nhiệt luyện','Phương pháp thủy luyện','Phương pháp điện phân NaCl nóng chảy','Phương pháp điện phân dung dịch NaCl'], ans:2, t:'kim-loai' },
+    { q: 'Câu 43.Câu 43: Sử dụng phương pháp nào để sản xuất nhôm?', opts:['Phương pháp nhiệt luyện','Phương pháp thủy luyện','Phương pháp điện phân dung dịch AlCl₃','Phương pháp điện phân Al₂O₃ nóng chảy'], ans:3, t:'kim-loai' },
+    { q: 'Câu 44.Câu 44: Cấu hình electron lớp ngoài cùng của nguyên tử kim loại kiềm là:', opts:['ns²np¹','ns²np²','ns¹','ns²'], ans:2, t:'kim-kiem' },
+    { q: 'Câu 45.Câu 45: Hiện tượng “nước chảy đá mòn” và hiện tượng “xâm thực” của nước mưa vào các phiến đá vôi là do trong nước có hoà tan khí nào sau đây?', opts:['CH₄','N₂','O₂','CO₂'], ans:3, t:'kim-kiem' },
+    { q: 'Câu 46.Câu 46: Sự tạo thạch nhũ trong các hang động đá vôi là quá trình hóa học diễn ra trong hang động hàng triệu năm. Phản ứng hóa học diễn tả quá trình đó là:', opts:['Ca(HCO₃)₂ → CaCO₃ + CO₂ + H₂O','MgCO₃ + CO₂ + H₂O → Mg(HCO₃)₂','CaCO₃ + CO₂ + H₂O → Ca(HCO₃)₂','CaO + CO₂ → CaCO₃'], ans:0, t:'kim-kiem' },
+    { q: 'Câu 47.Câu 47: Kim loại nào sau đây thuộc dãy kim loại chuyển tiếp thứ nhất?', opts:['Na','Al','Fe','Ba'], ans:2, t:'kim-loai' },
+    { q: 'Câu 48.Câu 48: Kim loại nào sau đây thuộc dãy kim loại chuyển tiếp thứ nhất?', opts:['Na','Ba','Al','Cu'], ans:3, t:'kim-loai' },
+    { q: 'Câu 49.Câu 49: Trạng thái oxi hóa thường gặp của Cu là:', opts:['+2','+3','+1','+2 và +3'], ans:0, t:'kim-loai' },
+    { q: 'Câu 50.Câu 50: Trạng thái oxi hóa thường gặp của Fe là:', opts:['+2','+2 và +3','+3','+1'], ans:1, t:'kim-loai' },
+];
+
+// ===== PART II: TRUE/FALSE =====
+const TF_DATA = [
+    {
+        id: 'tf1', title: 'Câu 1. Làm đậu phụ từ đậu tương',
+        ctx: 'Để làm đậu phụ từ đậu tương, ban đầu người ta xay đậu tương với nước và đun sôi. Sau đó thêm nước chua vào dung dịch đã nấu chín, khi đó "óc đậu" sẽ kết tủa. Nước chua có thể làm từ nước đậu phụ lên men hoặc giấm ăn. Người ta cũng có thể dùng thạch cao (không quá 1g/1kg đậu phụ).',
+        items: [
+            { label:'a', stmt:'Thành phần chính của thạch cao là calcium carbonate.', ans: false },
+            { label:'b', stmt:'Nước chua có tính acid nên làm protein trong nước đậu bị đông tụ.', ans: true },
+            { label:'c', stmt:'Nếu hàm lượng thạch cao vượt ngưỡng 1g/1kg đậu phụ thì ảnh hưởng không tốt đến sức khỏe.', ans: true },
+            { label:'d', stmt:'Bản chất sự tạo thành "óc đậu" từ nước đậu là quá trình đông tụ protein.', ans: true },
+        ]
+    },
+    {
+        id: 'tf2', title: 'Câu 2. Enzyme và xúc tác sinh học',
+        ctx: 'Phần lớn các enzyme là những protein xúc tác cho các phản ứng hóa học và sinh hóa. Enzyme có tính chọn lọc cao, mỗi enzyme chỉ xúc tác cho một hoặc một số phản ứng nhất định.',
+        items: [
+            { label:'a', stmt:'Khi có xúc tác enzyme, tốc độ phản ứng tăng nhanh hơn nhiều so với xúc tác hóa học của cùng một quá trình.', ans: true },
+            { label:'b', stmt:'Enzyme amylase xúc tác cho quá trình thủy phân tinh bột trong cơ thể.', ans: true },
+            { label:'c', stmt:'Enzyme tham gia vào quá trình tạo ra thông tin di truyền mới hoặc sửa đổi thông tin di truyền hiện có.', ans: false },
+            { label:'d', stmt:'Hoạt tính xúc tác của enzyme tăng khi pH của dung dịch tăng.', ans: false },
+        ]
+    },
+    {
+        id: 'tf3',img: 'IMAGES/Picture6.jpg', title: 'Câu 3. Pin Galvani Zn–Cu',
+        ctx: 'Hai kim loại Cu–Zn có E°Cu²⁺/Cu = +0,34V và E°Zn²⁺/Zn = −0,76V. Pin Galvani Zn–Cu được thiết lập ở 25°C.',
+        items: [
+            { label:'a', stmt:'Điện cực Zn là anode, điện cực Cu là cathode.', ans: true },
+            { label:'b', stmt:'Khối lượng của thanh Zn sẽ giảm dần, còn khối lượng thanh Cu sẽ tăng dần trong quá trình thí nghiệm.', ans: true },
+            { label:'c', stmt:'Thay điện cực Zn bằng điện cực Ag thì khối lượng thanh Cu tăng lên.', ans: false },
+            { label:'d', stmt:'Phản ứng hóa học xảy ra là: Zn + Cu²⁺ → Zn²⁺ + Cu.', ans: true },
+        ]
+    },
+    {
+        id: 'tf4', title: 'Câu 4.Cho biết:',
+        ctx: 'Cho biết: E°Al³⁺/Al = −1,676V ; E°Cu²⁺/Cu = +0,340V.',
+        items: [
+            { label:'a', stmt:'Tính khử của aluminium (Al) mạnh hơn tính khử của copper (Cu).', ans: true },
+            { label:'b', stmt:'Tính oxi hoá của cation Al³⁺ lớn hơn tính oxi hoá của cation Cu²⁺.', ans: false },
+            { label:'c', stmt:'Trong dung dịch, kim loại Cu khử được ion Al³⁺: 3Cu + 2Al³⁺ → 3Cu²⁺ + 2Al.', ans: false },
+            { label:'d', stmt:'Giá trị thế điện cực chuẩn của cặp Al³⁺/Al lớn hơn cặp Cu²⁺/Cu.', ans: false },
+        ]
+    },
+    {
+        id: 'tf5', title: 'Câu 5. Sản xuất nhôm từ quặng bauxite',
+        ctx: 'Quặng bauxite ở Tây Nguyên, Cao Bằng, Lạng Sơn... Aluminium oxide từ tinh chế bauxite dùng để sản xuất nhôm bằng phương pháp điện phân nóng chảy với điện cực bằng than chì (graphite).',
+        items: [
+            { label:'a', stmt:'Khí thoát ra trong quá trình điện phân có thể đốt cháy anode, gây hao mòn điện cực và sinh ra khí gây ô nhiễm môi trường.', ans: true },
+            { label:'b', stmt:'Để hạ giá thành sản phẩm, quá trình sản xuất nhôm từ quặng bauxite có thể dùng phương pháp nhiệt luyện.', ans: false },
+            { label:'c', stmt:'Tại anode, xảy ra quá trình oxi hoá theo sơ đồ: C + 4e → C⁴⁻.', ans: false },
+            { label:'d', stmt:'Tại cathode, xảy ra quá trình khử ion Al³⁺ thành nhôm nóng chảy.', ans: true },
+        ]
+    },
+    {
+        id: 'tf6', img: 'IMAGES/Picture7.jpg',title: 'Câu 6. Thí nghiệm ăn mòn đinh thép (4 cốc)',
+        ctx: 'Nhóm học sinh tiến hành thí nghiệm ăn mòn đinh thép trong 4 cốc khác nhau, để trong không khí 5 ngày. Cốc 1: đinh + nước; Cốc 2: đinh + dây kẽm + nước muối; Cốc 3: đinh + dây đồng + nước muối; Cốc 4: đinh trong dầu.',
+        items: [
+            { label:'a', stmt:'Ở cốc 1, đinh thép bị ăn mòn hóa học.', ans: true },
+            { label:'b', stmt:'Đinh thép ở cốc 4 không bị ăn mòn.', ans: true },
+            { label:'c', stmt:'Ở cốc 2, xuất hiện ăn mòn điện hóa, kẽm có tính khử mạnh hơn sắt nên kẽm bị ăn mòn, đinh thép được bảo vệ.', ans: true },
+            { label:'d', stmt:'Tốc độ đinh thép ở cốc 1 bị ăn mòn nhanh hơn ở cốc 3.', ans: false },
+        ]
+    },
+    {
+        id: 'tf7', title: 'Câu 7. Thí nghiệm Na, Mg, Al với nước',
+        ctx: 'Thí nghiệm: Rót 20mL nước + vài giọt phenolphtalein vào 3 cốc. Cốc 1: thêm Na nhỏ bằng hạt gạo; Cốc 2: thêm Mg vừa cạo sạch; Cốc 3: thêm Al vừa cạo sạch. Bước 3: đun nóng nhẹ cốc 2 và 3.',
+        items: [
+            { label:'a', stmt:'Ở bước 2, mẫu sodium trong cốc 1 nổi trên mặt nước và tan dần, dung dịch chuyển sang màu hồng.', ans: true },
+            { label:'b', stmt:'Sau bước 3, cốc 2 và cốc 3 đều có màu hồng.', ans: false },
+            { label:'c', stmt:'Sau bước 2, các mẫu Mg và Al đều nổi trên mặt nước và tan dần, dung dịch chuyển sang màu hồng.', ans: false },
+            { label:'d', stmt:'Các thí nghiệm trên chứng tỏ khả năng phản ứng của sodium, magnesium và aluminium là như nhau.', ans: false },
+        ]
+    },
+    {
+        id: 'tf8', title: 'Câu 8. Nước cứng trong công nghiệp',
+        ctx: 'Nước cứng là nguyên nhân gây ra nhiều tác hại trong các ngành công nghiệp. Độ cứng của nước công nghiệp cần được kiểm soát chặt chẽ nhằm tránh tổn hại cho các thiết bị như lò hơi, tháp giải nhiệt,...',
+        items: [
+            { label:'a', stmt:'Nước cứng là tác nhân gây ô nhiễm nguồn nước hiện nay.', ans: false },
+            { label:'b', stmt:'Nước chứa nhiều ion HCO₃⁻ là nước cứng vĩnh cửu.', ans: false },
+            { label:'c', stmt:'Phương pháp trao đổi ion dùng thay thế cation Ca²⁺, Mg²⁺ bằng ion khác để làm mềm nước cứng.', ans: true },
+            { label:'d', stmt:'Phân loại nước cứng dựa vào thành phần anion trong nước.', ans: true },
+        ]
+    },
+    {
+        id: 'tf9', title: 'Câu 9. Nước cứng trong đời sống',
+        ctx: 'Nước cứng gây nhiều tác hại đến đời sống và sản xuất.',
+        items: [
+            { label:'a', stmt:'Nước cứng là nước có chứa ion Ca²⁺ và Mg²⁺.', ans: true },
+            { label:'b', stmt:'Có thể làm mềm nước cứng vĩnh cửu bằng cách đun nóng.', ans: false },
+            { label:'c', stmt:'Ấm đun nước lâu ngày có lớp cặn bám ở đáy, có thể dùng giấm ăn để làm sạch.', ans: true },
+            { label:'d', stmt:'Dung dịch Na₂CO₃ được dùng để làm mềm nước cứng tạm thời và vĩnh cửu.', ans: true },
+        ]
+    },
+    {
+        id: 'tf10', title: 'Câu 10. Cặn vôi trong dụng cụ đun nước',
+        ctx: 'Sau một thời gian sử dụng, dưới đáy các dụng cụ đun nước nóng thường có lớp cặn vôi (cặn trắng) bám vào.',
+        items: [
+            { label:'a', stmt:'Giấm ăn hoặc nước cốt chanh loại bỏ được lớp cặn bám.', ans: true },
+            { label:'b', stmt:'Thành phần lớp cặn có chứa muối calcium chloride.', ans: false },
+            { label:'c', stmt:'Lớp cặn dày làm tiêu hao thêm nhiên liệu khi đun nóng.', ans: true },
+            { label:'d', stmt:'Người bị sỏi thận dùng nước cứng lâu dài làm tăng nguy cơ bệnh.', ans: true },
+        ]
+    },
+];
+
+// ===== PART III: SHORT ANSWER =====
+const SA_DATA = [
+    { id:'sa1', q:'Câu 1. Ethambutol (có công thức cấu tạo như hình bên dưới) là một loại thuốc kháng sinh, có tác dụng trong điều trị các bệnh nhiễm trùng do vi khuẩn. Ethambutol thường được sử dụng kết hợp với các loại thuốc khác để điều trị bệnh lao. Số C có trong phân tử Ethambutol là bao nhiêu?',img: 'IMAGES/Picture4.png', ans:'10', hint:'Đáp án: 10' },
+    { id:'sa2', q:'Câu 2. Citric acid là thành phần trong quả chanh. Số C có trong phân tử Citric acid là bao nhiêu?',img: 'IMAGES/Picture5.jpg', ans:'6', hint:'Đáp án: 6' },
+    { id:'sa3', q:'Câu 3. Ở trạng thái cơ bản, cấu hình electron lớp ngoài cùng của nguyên tử X là 3s¹. Số hiệu nguyên tử của nguyên tố X là bao nhiêu?', ans:'11', hint:'Đáp án: 11' },
+    { id:'sa4', q:'Câu 4. Nguyên tử nguyên tố X có cấu hình electron lớp ngoài cùng là 3s²3p³. Số proton của nguyên tử X là bao nhiêu?', ans:'15', hint:'Đáp án: 15' },
+    { id:'sa5', q:'Câu 5. Trên bảng tuần hoàn, nguyên tố X nằm ở chu kì 2, nhóm VIA. Nguyên tử X có bao nhiêu electron ở lớp ngoài cùng?', ans:'6', hint:'Đáp án: 6' },
+    { id:'sa6', q:'Câu 6. Trên bảng tuần hoàn, nguyên tố X nằm ở chu kì 2, nhóm VIA. Nguyên tử X có bao nhiêu lớp electron?', ans:'2', hint:'Đáp án: 2' },
+    { id:'sa7', q:'Câu 7. Cho dãy: glucose, saccharose, cellulose, tinh bột, fructose. Có bao nhiêu chất tham gia phản ứng thủy phân trong môi trường acid?', ans:'3', hint:'Đáp án: 3 (saccharose, cellulose, tinh bột)' },
+    { id:'sa8', q:'Câu 8. Cho: glucose, acetic acid, ethanol, aldehyde acetic, phenol, glycerol. Có bao nhiêu chất tác dụng với Cu(OH)₂ ở điều kiện thường?', ans:'3', hint:'Đáp án: 3 (glucose, acetic acid, glycerol)' },
+    { id:'sa9', q:'Câu 9. Cho pin điện hoá Fe–Cu. Biết E°Fe²⁺/Fe = −0,44V và E°Cu²⁺/Cu = +0,34V. Sức điện động chuẩn của pin (V)?', ans:'0.78', hint:'Đáp án: 0,78V (= 0,34 − (−0,44))' },
+    { id:'sa10', q:'Câu 10. Cho pin điện hoá Sn–Cu. Biết E°Sn²⁺/Sn = −0,137V và E°Cu²⁺/Cu = +0,34V. Sức điện động chuẩn của pin (V)?', ans:'0.477', hint:'Đáp án: 0,477V (= 0,34 − (−0,137))' },
+];
+
+const TOPIC_LABELS = {
+    'nguyen-tu': { label: 'Nguyên tử', cls: 'chip-nguyen-tu' },
+    'bang-tuan': { label: 'Bảng tuần hoàn', cls: 'chip-bang-tuan' },
+    'huu-co':    { label: 'Hóa hữu cơ', cls: 'chip-huu-co' },
+    'carbo':     { label: 'Carbohydrate', cls: 'chip-carbo' },
+    'polymer':   { label: 'Polymer', cls: 'chip-polymer' },
+    'pin':       { label: 'Pin điện hóa', cls: 'chip-pin' },
+    'kim-loai':  { label: 'Kim loại', cls: 'chip-kim-loai' },
+    'kim-kiem':  { label: 'Kim loại kiềm', cls: 'chip-kim-kiem' },
+};
+
+// ===== SHUFFLE =====
+// ===== UTIL =====
+function shuffle(arr){
+    const a=[...arr];
+    for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+}
+
+// ===== BUILD MCQ =====
+function buildShuffledMCQ(){
+    return shuffle(MCQ).map(q=>{
+        const indexed=q.opts.map((opt,i)=>({opt,isAns:i===q.ans}));
+        const sh=shuffle(indexed);
+
+        return{
+            q:q.q.replace(/^Câu \d+\.\s*/,''),
+            t:q.t,
+            img:q.img||null,
+            opts:sh.map(x=>x.opt),
+            ans:sh.findIndex(x=>x.isAns)
+        };
+    });
+}
+
+let mcqQuestions=[];
+
+function initMCQ(){
+    mcqQuestions=buildShuffledMCQ();
+
+    mcqState={
+        solved:new Array(mcqQuestions.length).fill(false),
+        attempts:new Array(mcqQuestions.length).fill(0),
+        chosen:new Array(mcqQuestions.length).fill(null)
+    };
+}
+
+// ===== STATE =====
+let mcqState={};
+
+let tfState={};
+TF_DATA.forEach(tf=>{
+    tfState[tf.id]=tf.items.map(()=>({solved:false,attempts:0}));
+});
+
+let saState={};
+SA_DATA.forEach(sa=>{
+    saState[sa.id]={solved:false,attempts:0};
+});
+
+// ===== PROGRESS =====
+function getTotalDone(){
+    const mcqDone=mcqState.solved.filter(Boolean).length;
+
+    const tfDone=Object.values(tfState)
+        .reduce((s,items)=>s+items.filter(i=>i.solved).length,0);
+
+    const saDone=Object.values(saState)
+        .filter(s=>s.solved).length;
+
+    return{
+        mcqDone,
+        tfDone,
+        saDone,
+        total:mcqDone+tfDone+saDone
+    };
+}
+
+function updateProgress(){
+
+    const {total}=getTotalDone();
+
+    const max=
+        MCQ.length+
+        TF_DATA.reduce((s,t)=>s+t.items.length,0)+
+        SA_DATA.length;
+
+    document.getElementById('progressBar').style.width=(total/max*100)+'%';
+
+    document.getElementById('progressLabel').textContent=
+        `${total} / ${max} câu đã hoàn thành`;
+
+    updateScore();
+}
+
+function updateScore(){
+
+    const {mcqDone,tfDone,saDone,total}=getTotalDone();
+
+    const max=
+        MCQ.length+
+        TF_DATA.reduce((s,t)=>s+t.items.length,0)+
+        SA_DATA.length;
+
+    const box=document.getElementById('scoreBox');
+
+    box.style.display='block';
+
+    document.getElementById('scoreNum').textContent=
+        `${total} / ${max}`;
+
+    document.getElementById('scoreRows').innerHTML=`
+        <div class="score-row">📝 MCQ: <strong>${mcqDone} / ${MCQ.length}</strong></div>
+        <div class="score-row">✅ Đúng/Sai: <strong>${tfDone} / ${TF_DATA.reduce((s,t)=>s+t.items.length,0)}</strong></div>
+        <div class="score-row">💡 Trả lời ngắn: <strong>${saDone} / ${SA_DATA.length}</strong></div>
+        ${total===max?'<div class="score-row" style="color:var(--gold-light);font-size:1.05rem">🎉 Hoàn thành tất cả! Xuất sắc!</div>':''}
+    `;
+}
+
+// ===== RENDER =====
+function render(){
+
+    const container=document.getElementById('quizContainer');
+
+    let html='';
+
+    // PART I
+    html+=`
+    <div class="part-title">
+    Phần I — Trắc nghiệm một đáp án
+    <span class="pt-pts">5,6 điểm · 28 câu thi</span>
+    </div>`;
+
+    mcqQuestions.forEach((q,qi)=>{
+
+        const solved=mcqState.solved[qi];
+
+        const tl=TOPIC_LABELS[q.t];
+
+        const chip=tl
+        ? `<span class="topic-chip ${tl.cls}">${tl.label}</span>`
+        : '';
+
+        const imgHTML=q.img
+        ? `<div style="text-align:center;margin:12px 0">
+           <img src="${q.img}" style="max-width:260px;border-radius:8px">
+           </div>`
+        : '';
+
+        const opts=q.opts.map((opt,oi)=>{
+
+            const letter=['A','B','C','D'][oi];
+
+            let cls='';
+
+            if(solved){
+                if(oi===q.ans) cls='correct';
+                else if(mcqState.chosen[qi]===oi) cls='wrong';
+            }
+
+            return`
+            <button class="opt-btn ${cls}"
+            id="mcq-opt-${qi}-${oi}"
+            onclick="mcqChoose(${qi},${oi})"
+            ${solved?'disabled':''}>
+                <span class="opt-letter">${letter}</span>
+                ${opt}
+            </button>`;
+        }).join('');
+
+        html+=`
+        <div class="set-card ${solved?'solved':''}" id="mcq-card-${qi}">
+
+            <div class="q-text">
+            <span style="font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);margin-right:4px">
+            Câu ${qi+1}.
+            </span>
+            ${q.q}
+            ${chip}
+            </div>
+
+            ${imgHTML}
+
+            <div class="options">
+            ${opts}
+            </div>
+
+        </div>`;
+    });
+
+    // ===== PART II =====
+    html+=`
+    <div class="part-title">
+    Phần II — Đúng / Sai
+    <span class="pt-pts">3,2 điểm · 4 câu thi</span>
+    </div>`;
+
+    TF_DATA.forEach(tf=>{
+
+        const st=tfState[tf.id];
+
+        const allSolved=st.every(i=>i.solved);
+
+        const itemsHtml=tf.items.map((item,ii)=>{
+
+            const isSolved=st[ii].solved;
+
+            const solvedCls=isSolved
+                ?(item.ans?'solved-t':'solved-f')
+                :'';
+
+            return`
+            <div class="tf-row ${solvedCls}" id="tf-row-${tf.id}-${ii}">
+
+                <span class="tf-label">${item.label}</span>
+
+                <span class="tf-statement">${item.stmt}</span>
+
+                <div class="tf-btns">
+
+                    <button class="tf-btn"
+                    onclick="tfChoose('${tf.id}',${ii},true)"
+                    ${isSolved?'disabled':''}>Đúng</button>
+
+                    <button class="tf-btn"
+                    onclick="tfChoose('${tf.id}',${ii},false)"
+                    ${isSolved?'disabled':''}>Sai</button>
+
+                </div>
+
+            </div>`;
+        }).join('');
+
+        const tfImgHTML = tf.img
+        ? `<div style="text-align:center;margin:12px 0">
+           <img src="${tf.img}" style="max-width:260px;border-radius:8px">
+           </div>`
+        : '';
+
+        html+=`
+        <div class="tf-card ${allSolved?'all-solved':''}">
+            <div class="q-text">${tf.title}</div>
+            <div class="tf-context">${tf.ctx}</div>
+            ${tfImgHTML}
+            <div class="tf-items">${itemsHtml}</div>
+        </div>`;
+    });
+
+    // ===== PART III =====
+    html+=`
+    <div class="part-title">
+    Phần III — Trả lời ngắn
+    <span class="pt-pts">1,2 điểm · 6 câu thi</span>
+    </div>`;
+
+    SA_DATA.forEach(sa=>{
+
+        const st=saState[sa.id];
+
+        const imgHTML=sa.img
+        ? `<div style="text-align:center;margin:12px 0">
+           <img src="${sa.img}" style="max-width:260px;border-radius:8px">
+           </div>`
+        : '';
+
+        html+=`
+        <div class="sa-card ${st.solved?'solved':''}">
+
+            <div class="sa-q">${sa.q}</div>
+
+            ${imgHTML}
+
+            <div class="sa-input-wrap">
+
+                <input
+                class="sa-input"
+                id="sa-input-${sa.id}"
+                type="text"
+                placeholder="Nhập đáp án..."
+                ${st.solved?'disabled':''}
+                onkeydown="if(event.key==='Enter')saCheck('${sa.id}')">
+
+                <button
+                class="sa-btn"
+                onclick="saCheck('${sa.id}')"
+                ${st.solved?'disabled':''}>
+                Kiểm tra
+                </button>
+
+            </div>
+
+            <div class="sa-hint" id="sa-hint-${sa.id}">
+            ${st.solved?'✓ '+sa.hint:''}
+            </div>
+
+        </div>`;
+    });
+
+    container.innerHTML=html;
+
+    updateProgress();
+}
+
+// ===== MCQ CHOOSE =====
+function mcqChoose(qi,oi){
+
+    if(mcqState.solved[qi]) return;
+
+    mcqState.attempts[qi]++;
+
+    mcqState.chosen[qi]=oi;
+
+    const btn=document.getElementById(`mcq-opt-${qi}-${oi}`);
+
+    if(oi===mcqQuestions[qi].ans){
+
+        mcqState.solved[qi]=true;
+
+        mcqQuestions[qi].opts.forEach((_,i)=>{
+            const b=document.getElementById(`mcq-opt-${qi}-${i}`);
+            if(b){
+                b.disabled=true;
+                if(i===mcqQuestions[qi].ans) b.classList.add('correct');
+            }
+        });
+
+        document.getElementById(`mcq-card-${qi}`).classList.add('solved');
+
+        updateProgress();
+
+    }else{
+
+        btn.classList.add('wrong');
+
+        setTimeout(()=>btn.classList.remove('wrong'),500);
+    }
+}
+
+// ===== INIT =====
+function resetQuiz(){
+
+    initMCQ();
+
+    TF_DATA.forEach(tf=>{
+        tfState[tf.id]=tf.items.map(()=>({solved:false,attempts:0}));
+    });
+
+    SA_DATA.forEach(sa=>{
+        saState[sa.id]={solved:false,attempts:0};
+    });
+
+    document.getElementById('scoreBox').style.display='none';
+
+    render();
+
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+function tfChoose(id,ii,val){
+
+    const tf = TF_DATA.find(t=>t.id===id);
+    const item = tf.items[ii];
+    const st = tfState[id][ii];
+
+    if(st.solved) return;
+
+    st.attempts++;
+
+    const row = document.getElementById(`tf-row-${id}-${ii}`);
+
+    const btns = row.querySelectorAll('.tf-btn');
+    const btnTrue = btns[0];
+    const btnFalse = btns[1];
+
+    const clicked = val ? btnTrue : btnFalse;
+
+    if(val === item.ans){
+
+        st.solved = true;
+
+        clicked.classList.add('correct');
+
+        btnTrue.disabled = true;
+        btnFalse.disabled = true;
+
+        updateProgress();
+
+    }else{
+
+        clicked.classList.add('wrong');
+
+        setTimeout(()=>{
+            clicked.classList.remove('wrong');
+        },600);
+
+    }
+}
+function saCheck(id) {
+    const sa = SA_DATA.find(s => s.id === id);
+    const st = saState[id];
+    if (st.solved) return;
+
+    const input = document.getElementById(`sa-input-${id}`);
+    const hint = document.getElementById(`sa-hint-${id}`);
+    const val = input.value.trim().replace(',', '.');
+
+    // Chấp nhận cả dấu phẩy lẫn dấu chấm cho số thập phân
+    const correct = sa.ans.replace(',', '.');
+
+    if (val.toLowerCase() === correct.toLowerCase()) {
+        st.solved = true;
+        input.classList.add('correct');
+        input.disabled = true;
+        hint.textContent = '✓ ' + sa.hint;
+        hint.classList.add('ok');
+        document.getElementById(`sa-input-${id}`)
+            .closest('.sa-card').classList.add('solved');
+        updateProgress();
+    } else {
+        input.classList.add('wrong');
+        setTimeout(() => input.classList.remove('wrong'), 500);
+        hint.textContent = 'Chưa đúng, thử lại!';
+    }
+}
+initMCQ();
+render();
+</script>
+</body>
+</html>
